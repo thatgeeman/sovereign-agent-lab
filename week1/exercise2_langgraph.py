@@ -71,6 +71,7 @@ OUTPUTS_DIR.mkdir(exist_ok=True)
 
 # ─── Display helper ───────────────────────────────────────────────────────────
 
+
 def print_result(result: dict, label: str) -> None:
     """Print a research_agent result dict in a readable format."""
     print(f"\n{'=' * 65}")
@@ -94,6 +95,7 @@ def print_result(result: dict, label: str) -> None:
             if content:
                 print(f"  [{role}]\n  {content}\n")
 
+
 # ─── Task A — main Edinburgh brief ────────────────────────────────────────────
 #
 # The agent must:
@@ -105,6 +107,7 @@ def print_result(result: dict, label: str) -> None:
 # Notice: we do NOT tell the agent in which order to do these things.
 # The order emerges from the model's reasoning about what information it needs.
 # That is what makes it an agent rather than a script.
+
 
 def task_a() -> dict:
     print("\n--- Task A: Main Edinburgh Brief ---")
@@ -133,6 +136,7 @@ def task_a() -> dict:
     print("\n→ Record results in week1/answers/ex2_answers.py")
     return result
 
+
 # ─── Task B — flyer tool observation ──────────────────────────────────────────
 #
 # The flyer tool now ships with a working graceful-fallback implementation.
@@ -152,6 +156,7 @@ def task_a() -> dict:
 # takes the entire ReAct loop down with it. A tool that returns a structured,
 # labelled fallback keeps the agent's control flow intact.
 
+
 def task_b() -> dict:
     print("\n--- Task B: Flyer Tool ---")
     print("  The flyer tool runs either a live image call (if FLYER_IMAGE_MODEL")
@@ -169,6 +174,7 @@ def task_b() -> dict:
     )
     print_result(result, "TASK B — Flyer Tool")
     return result
+
 
 # ─── Task C — three failure scenarios ─────────────────────────────────────────
 #
@@ -189,6 +195,7 @@ def task_b() -> dict:
 # Scenario 3: Completely out of scope
 #   There is no tool for train times. The agent should handle this cleanly.
 #   Question: Did it try to call a tool anyway? Did it make something up?
+
 
 def task_c() -> list:
     results = []
@@ -223,6 +230,7 @@ def task_c() -> list:
     print("\n→ Answer the Scenario questions in week1/answers/ex2_answers.py")
     return results
 
+
 # ─── Task D — graph structure ─────────────────────────────────────────────────
 #
 # LangGraph exports a visual representation of the agent's internal structure.
@@ -237,12 +245,16 @@ def task_c() -> list:
 # RESEARCH_MODEL env var so your `make ex2-d` output is consistent with
 # `make ex2-a` if you've pinned a non-default model.
 
+
 def task_d() -> str:
     from langchain_openai import ChatOpenAI
     from langgraph.prebuilt import create_react_agent
+
     from sovereign_agent.tools.venue_tools import (
-        check_pub_availability, get_edinburgh_weather,
-        calculate_catering_cost, generate_event_flyer,
+        calculate_catering_cost,
+        check_pub_availability,
+        generate_event_flyer,
+        get_edinburgh_weather,
     )
 
     llm = ChatOpenAI(
@@ -251,10 +263,15 @@ def task_d() -> str:
         model=os.getenv("RESEARCH_MODEL", "Qwen/Qwen3-32B"),
         temperature=0,
     )
-    agent = create_react_agent(llm, [
-        check_pub_availability, get_edinburgh_weather,
-        calculate_catering_cost, generate_event_flyer,
-    ])
+    agent = create_react_agent(
+        llm,
+        [
+            check_pub_availability,
+            get_edinburgh_weather,
+            calculate_catering_cost,
+            generate_event_flyer,
+        ],
+    )
 
     print(f"\n{'=' * 65}")
     print("  TASK D — Agent Graph Structure (Mermaid)")
@@ -271,7 +288,9 @@ def task_d() -> str:
     print("  Record your comparison in week1/answers/ex2_answers.py → TASK_D_COMPARISON")
     return mermaid
 
+
 # ─── Main ─────────────────────────────────────────────────────────────────────
+
 
 def main(which: str = "all") -> None:
     output = {}
@@ -293,6 +312,7 @@ def main(which: str = "all") -> None:
     out_path.write_text(json.dumps(output, indent=2, default=str))
     print(f"\n✅  Results saved to {out_path}")
     print("    Fill in week1/answers/ex2_answers.py")
+
 
 if __name__ == "__main__":
     valid = {"all", "task_a", "task_b", "task_c", "task_d"}

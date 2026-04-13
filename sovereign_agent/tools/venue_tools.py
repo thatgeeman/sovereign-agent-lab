@@ -224,6 +224,7 @@ def calculate_catering_cost(guests: int, price_per_head_gbp: float) -> str:
 #   always returning a structured success dict, we keep the agent's control
 #   flow intact regardless of what is happening at the provider.
 
+
 def _build_flyer_prompt(venue_name: str, guest_count: int, event_theme: str) -> str:
     return (
         f"Professional event flyer for {event_theme} at {venue_name}, "
@@ -242,7 +243,7 @@ def _attempt_real_image_generation(prompt: str) -> str | None:
     2026-04-13 FLUX deprecation on Nebius, there is no default image model
     configured — the tool will transparently use the placeholder path.
     """
-    model = os.getenv("FLYER_IMAGE_MODEL", "").strip()
+    model = os.getenv("FLYER_IMAGE_MODEL", "black-forest-labs/flux-schnell").strip()
     if not model:
         return None
     try:
